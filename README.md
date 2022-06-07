@@ -17,8 +17,50 @@ We will also construct a more advanced module that will require more advanced co
 
 We will also share tips and tricks that will make your PX4 development experience more pleasant, and we will stick around to answer as many questions as possible in the time we have. 
 
-https://sched.co/12d8c
+> [Link to the Event information](https://sched.co/12d8c)
 
 ## 1. High Level Overview of PX4 Architecture
 
+[Official PX4 Architecture Documentation](https://docs.px4.io/master/en/concept/px4_systems_architecture.html)
+
 ### NuttX OS
+
+PX4-Autopilot holds the NuttX related files the `platform/nuttx` [folder](https://github.com/PX4/PX4-Autopilot/tree/master/platforms/nuttx)
+
+In the `nuttx/src` folder, you can find commonly used OS-level px4 commands like: [`px4_task_spawn_cmd`](https://github.com/PX4/PX4-Autopilot/blob/master/platforms/nuttx/src/px4/common/tasks.cpp#L58-L87)
+
+There are 2 submodules inside the `nuttx/nuttX` [folder]:
+
+The `nuttx/NuttX/apps` submodule handles:
+- Shells (MAVLink Shell utilizes this)
+
+The `nuttx/NuttX/nuttx` submodule handles:
+- Task Scheduling
+- IO resource management
+- Networking
+- File System
+- Hardware level abstraction (Drivers)
+
+### Modules
+
+All the PX4-Autopilot modules are located in the `src/modules` [folder](https://github.com/PX4/PX4-Autopilot/tree/master/src/modules).
+
+[Official PX4 Modules Documentation](https://docs.px4.io/master/en/modules/modules_main.html)
+
+### Drivers
+
+### uORB
+- Blog Post on PX4 uORB Concept: [Part 1](https://px4.io/px4-uorb-explained-part-1/), [Part 2](https://px4.io/px4-uorb-explained-part-2/), [Part 3](https://px4.io/px4-uorb-explained-part-3-the-deep-stuff/) and [Part 4 (Coming Soon)]!
+
+
+
+### Parameters
+- Blog Post on PX4 Parameters Concept: [Part 1](https://px4.io/px4-parameters-part-1-overview/) and [Part 2](https://px4.io/px4-parameters-part-2-in-depth-guide/)
+
+
+
+## Development Environment setup
+
+- [Ubuntu PX4 Build Toolchain setup Documentation](https://docs.px4.io/master/en/dev_setup/dev_env_linux_ubuntu.html#gazebo-jmavsim-and-nuttx-pixhawk-targets)
+- [PX4 Docker container usage Documentation](https://docs.px4.io/master/en/test_and_ci/docker.html#use-the-docker-container)
+
