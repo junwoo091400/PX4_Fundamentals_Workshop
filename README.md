@@ -47,6 +47,7 @@ All the PX4-Autopilot modules are located in the `src/modules` [folder](https://
 
 [Official PX4 Modules Documentation](https://docs.px4.io/master/en/modules/modules_main.html)
 
+
 ### Drivers
 
 ### uORB
@@ -60,6 +61,51 @@ All the PX4-Autopilot modules are located in the `src/modules` [folder](https://
 
 
 ## Development Environment setup
+
+> We will be following [PX4 Docker Documentation](https://docs.px4.io/master/en/test_and_ci/docker.html)
+
+### First, install Docker
+
+### Second, clone the PX4-Autopilot repository
+```bash
+git clone https://github.com/PX4/PX4-Autopilot.git --recursive
+cd PX4-Autopilot
+```
+
+### Third, execute the Docker command
+
+`./Tools/docker_run.sh 'make px4_sitl_default'`
+
+### Fourth, execute an actual SITL
+
+You first need to create a running Docker container
+
+```bash
+docker run -it --privileged \
+--env=LOCAL_USER_ID="$(id -u)" \
+-v $(pwd):/src/PX4-Autopilot/:rw \
+-v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+-e DISPLAY=:0 \
+-p 14550:14550/udp \
+--name=px4_sitl_container px4io/px4-dev-ros-melodic:latest bash
+```
+
+Then navigate into the directory `src/PX4-Autopilot` and build the SITL
+
+```
+cd src/PX4-Autopilot
+make px4_sitl_default gazebo HEADLESS=1
+```
+
+Note: If you exit from the container and want to start a new container, an error "Container name already exists" will pop up. This is because you have created the container with the name 'px4_sitl_container' supplied from the first command you entered above before.
+
+Therefore you need to type this to run the container again:
+`docker start -ai px4_sitl_container`
+
+### Fifth, check the SITL by opening a QGC
+
+- All the PX4IO Docker [Images](https://hub.docker.com/u/px4io/)
+- 
 
 - [Ubuntu PX4 Build Toolchain setup Documentation](https://docs.px4.io/master/en/dev_setup/dev_env_linux_ubuntu.html#gazebo-jmavsim-and-nuttx-pixhawk-targets)
 - [PX4 Docker container usage Documentation](https://docs.px4.io/master/en/test_and_ci/docker.html#use-the-docker-container)
