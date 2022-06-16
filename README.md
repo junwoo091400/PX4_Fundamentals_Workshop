@@ -19,11 +19,18 @@ We will also share tips and tricks that will make your PX4 development experienc
 
 > [Link to the Event information](https://sched.co/12d8c)
 
+## What is PX4?
+
+
 ## 1. High Level Overview of PX4 Architecture
 
-[Official PX4 Architecture Documentation](https://docs.px4.io/master/en/concept/px4_systems_architecture.html)
+[Official PX4 Architecture Documentation](https://docs.px4.io/master/en/concept/px4_systems_architecture.html).
 
 ### NuttX OS
+
+You can learn briefly about the concept of an **Operating System** [here](https://edu.gcfglobal.org/en/computerbasics/understanding-operating-systems/1/).
+Or if you feel like it, [here's](https://www.geeksforgeeks.org/introduction-of-operating-system-set-1/) a more in-depth explanation on Operating System.
+
 
 PX4-Autopilot holds the NuttX related files the `platform/nuttx` [folder](https://github.com/PX4/PX4-Autopilot/tree/master/platforms/nuttx)
 
@@ -53,11 +60,13 @@ All the PX4-Autopilot modules are located in the `src/modules` [folder](https://
 ### uORB
 - Blog Post on PX4 uORB Concept: [Part 1](https://px4.io/px4-uorb-explained-part-1/), [Part 2](https://px4.io/px4-uorb-explained-part-2/), [Part 3](https://px4.io/px4-uorb-explained-part-3-the-deep-stuff/) and [Part 4 (Coming Soon)]!
 
+![uORB Graph](Assets/uORB_Graph.gif)
+
+You can check out the colorful and interactive uORB graph [here](https://docs.px4.io/master/en/middleware/uorb_graph.html)!
 
 
 ### Parameters
 - Blog Post on PX4 Parameters Concept: [Part 1](https://px4.io/px4-parameters-part-1-overview/) and [Part 2](https://px4.io/px4-parameters-part-2-in-depth-guide/)
-
 
 
 ## Development Environment setup
@@ -72,11 +81,7 @@ git clone https://github.com/PX4/PX4-Autopilot.git --recursive
 cd PX4-Autopilot
 ```
 
-### Third, execute the Docker command
-
-`./Tools/docker_run.sh 'make px4_sitl_default'`
-
-### Fourth, execute an actual SITL
+### Third, execute an SITL through Docker
 
 You first need to create a running Docker container
 
@@ -86,8 +91,7 @@ docker run -it --privileged \
 -v $(pwd):/src/PX4-Autopilot/:rw \
 -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
 -e DISPLAY=:0 \
--p 14550:14550/udp \
---name=px4_sitl_container px4io/px4-dev-ros-melodic:latest bash
+px4io/px4-dev-ros-melodic:latest bash
 ```
 
 Then navigate into the directory `src/PX4-Autopilot` and build the SITL
@@ -96,11 +100,6 @@ Then navigate into the directory `src/PX4-Autopilot` and build the SITL
 cd src/PX4-Autopilot
 make px4_sitl_default gazebo HEADLESS=1
 ```
-
-Note: If you exit from the container and want to start a new container, an error "Container name already exists" will pop up. This is because you have created the container with the name 'px4_sitl_container' supplied from the first command you entered above before.
-
-Therefore you need to type this to run the container again:
-`docker start -ai px4_sitl_container`
 
 ### Fifth, check the SITL by opening a QGC
 
