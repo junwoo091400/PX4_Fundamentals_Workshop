@@ -19,6 +19,20 @@ We will also share tips and tricks that will make your PX4 development experienc
 
 > [Link to the Event information](https://sched.co/12d8c)
 
+## Prerequisites
+In order to follow the Workshop without delay, you must have the following prerequisites satisfied:
+Click the links on the right of each condition that you don't satisfy
+
+1. Have Git installed: https://git-scm.com/downloads
+2. Have Docker installed: https://docs.docker.com/get-docker/
+3. Have the Docker image for PX4 development ready
+   - Do: `docker pull px4io/px4-dev-ros-melodic:latest`
+4. 
+
+
+> Workshop content start here!
+---
+
 ## What is PX4?
 
 ## High Level Overview of PX4 Architecture
@@ -68,6 +82,8 @@ You can check out the colorful and interactive uORB graph [here](https://docs.px
 - Blog Post on PX4 Parameters Concept: [Part 1](https://px4.io/px4-parameters-part-1-overview/) and [Part 2](https://px4.io/px4-parameters-part-2-in-depth-guide/)
 
 
+---
+
 ## Development Environment setup
 
 > We will be following [PX4 Docker Documentation](https://docs.px4.io/master/en/test_and_ci/docker.html)
@@ -82,32 +98,56 @@ git clone https://github.com/PX4/PX4-Autopilot.git --recursive
 cd PX4-Autopilot
 ```
 
-### Third, execute an SITL through Docker
+- It is important that you `cd` into the PX4-Autopilot directory as we will map the current directory where Command prompt is at as the PX4-Autopilot directory in the Docker container!
+
+### Third, run the Docker container
 
 You first need to create a running Docker container
 
 ```bash
 docker run -it --privileged \
 --env=LOCAL_USER_ID="$(id -u)" \
--v $(pwd):/src/PX4-Autopilot/:rw \
+-v "$(pwd):/src/PX4-Autopilot/:rw" \
 -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
 -e DISPLAY=:0 \
 px4io/px4-dev-ros-melodic:latest bash
+
+# Or, if you prefer a continuous one-line command:
+docker run -it --privileged -v "$(pwd):/src/PX4-Autopilot/:rw" -v /tmp/.X11-unix:/tmp/.X11-unix:ro -e DISPLAY=:0 px4io/px4-dev-ros-melodic:latest bash
 ```
 
-Then navigate into the directory `src/PX4-Autopilot` and build the SITL
+- If you don't have the "" around the volume mapping of the PX4-Autopilot directory, it may include a space character, which can cause error messages such as "invalid reference format: repository name must be lowercase".
+- Check out the [Stack Overflow answer](https://stackoverflow.com/questions/48522615/docker-error-invalid-reference-format-repository-name-must-be-lowercase).
+
+### Fourth, build a sample target to test the Docker container
+Then navigate into the directory `src/PX4-Autopilot` and build the px4 target `px4_sitl` as an example
+```bash
+cd /src/PX4-Autopilot
+make px4_sitl_default
+```
+
+### Docker resources
+- All the PX4IO Docker [Images](https://hub.docker.com/u/px4io/)
+- [Ubuntu PX4 Build Toolchain setup Documentation](https://docs.px4.io/master/en/dev_setup/dev_env_linux_ubuntu.html#gazebo-jmavsim-and-nuttx-pixhawk-targets)
+- [PX4 Docker container usage Documentation](https://docs.px4.io/master/en/test_and_ci/docker.html#use-the-docker-container)
+
+---
+
+## Software In The Loop (SITL) in Docker
 
 ```bash
-cd src/PX4-Autopilot
+cd /src/PX4-Autopilot
 make px4_sitl_default gazebo HEADLESS=1
 make px4_sitl_default jmavsim HEADLESS=1 # In case Gazebo is taking up too much resource you can try this!
 ```
 
-### Fifth, check the SITL by opening a QGC
+- If the build process in the Docker is taking too much resource in Windows, checkout [this article](https://dev.to/tallesl/vmmen-process-consuming-too-much-memory-docker-desktop-273p) for a fix (for limiting the RAM usage of WSL process)
+
+### Then connect QGC with the SITL
 
 Running the docker container should automatically allow the QGC to connect!
 
-### Sixth, try taking off the drone
+### Try taking off the drone
 
 You can either do one of the following:
 1. In QGC, select the 'Takeoff' button on the left panel in the main map screen, and slide to confirm takeoff command
@@ -115,10 +155,7 @@ You can either do one of the following:
 
 This should have your drone flying in the air! And you can see how the simulation actually works :)
 
-### Docker resources
-- All the PX4IO Docker [Images](https://hub.docker.com/u/px4io/)
-- [Ubuntu PX4 Build Toolchain setup Documentation](https://docs.px4.io/master/en/dev_setup/dev_env_linux_ubuntu.html#gazebo-jmavsim-and-nuttx-pixhawk-targets)
-- [PX4 Docker container usage Documentation](https://docs.px4.io/master/en/test_and_ci/docker.html#use-the-docker-container)
+---
 
 ## Simple Module Development: MAD-MAX
 
@@ -153,4 +190,28 @@ make px4_sitl_default gazebo HEADLESS=1
 make px4_sitl_default jmavsim HEADLESS=1 # In case Gazebo is taking up too much resource you can try this!
 ```
 
-### 
+---
+
+## Hardware Demo
+> Does all of this run in Hardware? If so, how do we do that?
+
+I will be using [Pixhawk 4](https://docs.px4.io/master/en/flight_controller/pixhawk4.html), but you can use any hardware you want that is supported by PX4! Here is [the list of all of them](https://docs.px4.io/master/en/flight_controller/).
+
+### Figure out which target name you need to type from the Docs
+
+For Pixhawk 4, `px4_fmu-v5` is the target name!
+
+### Uploading the program to the Hardware
+
+Uploading can be done in 2 different ways:
+
+#### 1. Uploading with the native upload command
+
+You can refer to the Docs [here](https://docs.px4.io/master/en/dev_setup/building_px4.html#uploading-firmware-flashing-the-board), but basically you need to append ` upload` at the end of the make command of building the target.
+
+`make px4_fmu-v5_default upload`
+
+> This method is the most convenient one, but it requires the Docker container to be able to connect to the board.
+
+#### 2. Uploading using QGC
+
