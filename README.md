@@ -21,8 +21,7 @@ We will also share tips and tricks that will make your PX4 development experienc
 
 ## What is PX4?
 
-
-## 1. High Level Overview of PX4 Architecture
+## High Level Overview of PX4 Architecture
 
 [Official PX4 Architecture Documentation](https://docs.px4.io/master/en/concept/px4_systems_architecture.html).
 
@@ -75,6 +74,8 @@ You can check out the colorful and interactive uORB graph [here](https://docs.px
 
 ### First, install Docker
 
+Follow the instructions here: https://docs.docker.com/get-docker/
+
 ### Second, clone the PX4-Autopilot repository
 ```bash
 git clone https://github.com/PX4/PX4-Autopilot.git --recursive
@@ -96,16 +97,60 @@ px4io/px4-dev-ros-melodic:latest bash
 
 Then navigate into the directory `src/PX4-Autopilot` and build the SITL
 
-```
+```bash
 cd src/PX4-Autopilot
 make px4_sitl_default gazebo HEADLESS=1
+make px4_sitl_default jmavsim HEADLESS=1 # In case Gazebo is taking up too much resource you can try this!
 ```
 
 ### Fifth, check the SITL by opening a QGC
 
-- All the PX4IO Docker [Images](https://hub.docker.com/u/px4io/)
-- 
+Running the docker container should automatically allow the QGC to connect!
 
+### Sixth, try taking off the drone
+
+You can either do one of the following:
+1. In QGC, select the 'Takeoff' button on the left panel in the main map screen, and slide to confirm takeoff command
+2. In PX4 terminal, type `commander takeoff`
+
+This should have your drone flying in the air! And you can see how the simulation actually works :)
+
+### Docker resources
+- All the PX4IO Docker [Images](https://hub.docker.com/u/px4io/)
 - [Ubuntu PX4 Build Toolchain setup Documentation](https://docs.px4.io/master/en/dev_setup/dev_env_linux_ubuntu.html#gazebo-jmavsim-and-nuttx-pixhawk-targets)
 - [PX4 Docker container usage Documentation](https://docs.px4.io/master/en/test_and_ci/docker.html#use-the-docker-container)
 
+## Simple Module Development: MAD-MAX
+
+> Let's develop a simple module to get an understanding of how to create one of the most fundamental blocks of PX4!
+
+[This](https://github.com/junwoo091400/PX4-Autopilot/tree/devsummit2022_px4_fundamentals_workshop_simple_module) is where the custom branch for the simple module is located!
+
+### Fetching the custom branch from a repository
+
+First, add the remote repository
+```bash
+git remote add junwoo https://github.com/junwoo091400/PX4-Autopilot.git
+git remote add junwoo git@github.com:junwoo091400/PX4-Autopilot.git # In case you are using a SSH credentials for github interface
+```
+
+Second, fetch the branch `devsummit2022_px4_fundamentals_workshop_simple_module` from the repository
+```bash
+git fetch junwoo devsummit2022_px4_fundamentals_workshop_simple_module
+git checkout junwoo/devsummit2022_px4_fundamentals_workshop_simple_module # Checkout the branch, but you will be in a detached HEAD state!
+git switch -c devsummit2022_px4_fundamentals_workshop_simple_module # Create a new local branch off of the remote branch
+```
+
+### Updating the submodules (may or may not be needed)
+PX4 uses a lot of different submodules and it may become outdated once you switch to another branch and so on. Therefore it is important to update the submodules when you switch the branch!
+```bash
+git submodule update --init --recursive # `--init` is for initializing a submodule in case it doesn't exist at all (wasn't fetched)
+```
+
+### Build the SITL
+```bash
+make px4_sitl_default gazebo HEADLESS=1
+make px4_sitl_default jmavsim HEADLESS=1 # In case Gazebo is taking up too much resource you can try this!
+```
+
+### 
