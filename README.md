@@ -27,6 +27,8 @@ Click the links on the right of each condition that you don't satisfy
 2. Have Docker installed: https://docs.docker.com/get-docker/
 3. Have the Docker image for PX4 development ready
    - Do: `docker pull px4io/px4-dev-ros-melodic:latest`
+4. Have QGC installed: https://docs.qgroundcontrol.com/master/en/getting_started/download_and_install.html
+5. 
 
 > Workshop content start here!
 ---
