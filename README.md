@@ -27,8 +27,6 @@ Click the links on the right of each condition that you don't satisfy
 2. Have Docker installed: https://docs.docker.com/get-docker/
 3. Have the Docker image for PX4 development ready
    - Do: `docker pull px4io/px4-dev-ros-melodic:latest`
-4. 
-
 
 > Workshop content start here!
 ---
@@ -100,7 +98,17 @@ cd PX4-Autopilot
 
 - It is important that you `cd` into the PX4-Autopilot directory as we will map the current directory where Command prompt is at as the PX4-Autopilot directory in the Docker container!
 
-### Third, run the Docker container
+### Third, get the Docker Image 'px4io/px4-dev-ros-melodic:latest' 
+
+Here, you can either pull it from the docker hub or load it from the USB file that is supplied during the workshop.
+
+How to pull from internet: `docker pull px4io/px4-dev-ros-melodic:latest`
+
+How to load from a USB drive tar file: `docker load -i .\px4-dev-ros-melodic_latest.tar`.
+Note, the path you supply should be where the Docker Image TAR file is located in your device.
+
+
+### Fourth, run the Docker Container
 
 You first need to create a running Docker container
 
@@ -119,12 +127,15 @@ docker run -it --privileged -v "$(pwd):/src/PX4-Autopilot/:rw" -v /tmp/.X11-unix
 - If you don't have the "" around the volume mapping of the PX4-Autopilot directory, it may include a space character, which can cause error messages such as "invalid reference format: repository name must be lowercase".
 - Check out the [Stack Overflow answer](https://stackoverflow.com/questions/48522615/docker-error-invalid-reference-format-repository-name-must-be-lowercase).
 
-### Fourth, build a sample target to test the Docker container
+### Fifth, build a sample target
 Then navigate into the directory `src/PX4-Autopilot` and build the px4 target `px4_sitl` as an example
 ```bash
 cd /src/PX4-Autopilot
 make px4_sitl_default
 ```
+
+This should produce a file `build/px4_sitl_default/bin/px4`.
+Now you have your first target built!
 
 ### Docker resources
 - All the PX4IO Docker [Images](https://hub.docker.com/u/px4io/)
@@ -186,8 +197,7 @@ git submodule update --init --recursive # `--init` is for initializing a submodu
 
 ### Build the SITL
 ```bash
-make px4_sitl_default gazebo HEADLESS=1
-make px4_sitl_default jmavsim HEADLESS=1 # In case Gazebo is taking up too much resource you can try this!
+make px4_sitl_default jmavsim HEADLESS=1 # Lightweight simulator!
 ```
 
 ---
