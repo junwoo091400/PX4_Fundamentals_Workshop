@@ -202,6 +202,10 @@ git submodule update --init --recursive # `--init` is for initializing a submodu
 make px4_sitl_default jmavsim HEADLESS=1 # Lightweight simulator!
 ```
 
+### Uploading the plan
+
+Upload the [sample mission plan file](Assets/mad_max_sample.plan) via QGC.
+
 ---
 
 ## Hardware Demo
@@ -227,3 +231,12 @@ You can refer to the Docs [here](https://docs.px4.io/master/en/dev_setup/buildin
 
 #### 2. Uploading using QGC
 
+Select 'Custom' Firmware selection in the Firmware update tab, and upload! :P
+
+### Select the Simulation-In-Hardware Airframe
+
+'SIH Quadcopter X' from the Airframes Tab, to run simple simulation inside the hardware!
+
+### Check the mad_max module's output via MAVLink Shell
+
+You can have the output through QGC's MAVLink Shell (Anaylize Tools tab > MAVLink Shell > Breakout panel)
